@@ -40,7 +40,7 @@ jobs:
         WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
 
     - name: Run wiz-cli docker image scan
-      run: ./wizcli docker scan --image $REPOSITORY:$TAG --policy "$POLICY" ––dockerfile
+      run: ./wizcli docker scan --image $REPOSITORY:$TAG --policy "$POLICY"
 
     - name: Push the Docker image to the GitHub Container Registry
       run: docker push $REPOSITORY:$TAG
