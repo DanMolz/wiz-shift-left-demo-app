@@ -55,7 +55,9 @@ jobs:
 
     # Step 7: Push the Docker image to the Docker Hub with release version as tag
     - name: Push the Docker image to the GitHub Container Registry
-      run: docker push $REPOSITORY:$TAG
+      run: |
+        docker push $REPOSITORY:$TAG
+        docker push $REPOSITORY:latest
 
     # Step 8: Fetch digest of Docker image for Graph enrichment
     - name: Fetch digest of Docker image for Graph enrichment
