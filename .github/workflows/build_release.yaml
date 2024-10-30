@@ -27,17 +27,16 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v2
 
-    # Step 2: Create GitHub Release (using the merged PR version or incremented version)
+    # Step 2: Create GitHub Release (using softprops/action-gh-release)
     - name: Create GitHub Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v1.0.${{ github.run_number }}  # You can customize this versioning scheme
-        release_name: Release v1.0.${{ github.run_number }}
-        draft: false
-        prerelease: false
+        name: Release v1.0.${{ github.run_number }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Step 3: Log in to Docker Hub
     - name: Log in to Docker Hub
