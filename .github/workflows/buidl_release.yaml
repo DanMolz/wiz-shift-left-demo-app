@@ -17,7 +17,7 @@ jobs:
       SCAN_PATH: "." # Set the relative path in the repo to build the image from
       REPOSITORY: docker.io/danielmoloney/wiz-shift-left-demo-app
       TAG: "latest" # Set the tag to use for the image
-      POLICY: "Default vulnerabilities policy" # Set the desired Wiz CLI policy to use
+      POLICY: "Default vulnerabilities policy - [dmoloney]" # Set the desired Wiz CLI policy to use
 
     defaults:
       run:
