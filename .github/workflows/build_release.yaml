@@ -1,14 +1,13 @@
 name: 'build_release'
 
 on:
-  workflow_dispatch:
   pull_request:
     types:
       - closed
 
 jobs:
   wiz-cli-image-scan:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     name: 'Build, Scan, and Push Image with Release'
     runs-on: self-hosted
 
@@ -34,20 +33,20 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # Step 3: Authenticate to Wiz
+    # Step 3: Download Wiz CLI
+    - name: Download Wiz CLI
+      run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+
+    # Step 4: Authenticate to Wiz
     - name: Authenticate to Wiz
       run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
       env:
         WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
         WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
 
-    # Step 4: Build the Docker image
+    # Step 5: Build the Docker image
     - name: Build the Docker image
       run: cd $SCAN_PATH && docker build . --tag $REPOSITORY:$TAG
-
-    # Step 5: Download Wiz CLI
-    - name: Download Wiz CLI
-      run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
 
     # Step 6: Run Wiz CLI docker image scan with release version as tag
     - name: Run wiz-cli docker image scan
