@@ -8,7 +8,7 @@ on:
 
 jobs:
   wiz-cli-image-scan:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     name: 'Build and Push Image'
     # runs-on: ubuntu-latest
     runs-on: self-hosted
