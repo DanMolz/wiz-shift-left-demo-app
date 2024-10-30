@@ -14,7 +14,7 @@ spec:
         app: nix-foundation-www
     spec:
       containers:
-      - image: fdervisi/wiz-shift-left-demo-app:latest
+      - image: danielmoloney/wiz-shift-left-demo-app:latest
         name: nix-foundation-www
         ports:
         - containerPort: 8080
