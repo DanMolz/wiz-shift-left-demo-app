@@ -34,29 +34,29 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # Step 3: Build the Docker image
-    - name: Build the Docker image
-      run: cd $SCAN_PATH && docker build . --tag $REPOSITORY:$TAG
-
-    # Step 4: Download Wiz CLI
-    - name: Download Wiz CLI
-      run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
-
-    # Step 5: Authenticate to Wiz
+    # Step 3: Authenticate to Wiz
     - name: Authenticate to Wiz
       run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
       env:
         WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
         WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
 
-    # Step 7: Run Wiz CLI docker image scan with release version as tag
+    # Step 4: Build the Docker image
+    - name: Build the Docker image
+      run: cd $SCAN_PATH && docker build . --tag $REPOSITORY:$TAG
+
+    # Step 5: Download Wiz CLI
+    - name: Download Wiz CLI
+      run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+
+    # Step 6: Run Wiz CLI docker image scan with release version as tag
     - name: Run wiz-cli docker image scan
       run: ./wizcli docker scan --image $REPOSITORY:$TAG --policy "$POLICY"
 
-    # Step 8: Push the Docker image to the Docker Hub with release version as tag
+    # Step 7: Push the Docker image to the Docker Hub with release version as tag
     - name: Push the Docker image to the GitHub Container Registry
       run: docker push $REPOSITORY:$TAG
 
-    # Step 9: Fetch digest of Docker image for Graph enrichment
+    # Step 8: Fetch digest of Docker image for Graph enrichment
     - name: Fetch digest of Docker image for Graph enrichment
       run: ./wizcli docker tag --image $REPOSITORY:$TAG
