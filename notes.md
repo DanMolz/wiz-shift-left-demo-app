@@ -11,5 +11,5 @@ git push origin code-update
 3. Cleanup
 git checkout master
 git pull origin master
-git branch -d gabe_add_acme_event
-git push origin :gabe_add_acme_event
+git branch -d code-update
+git push origin :code-update
