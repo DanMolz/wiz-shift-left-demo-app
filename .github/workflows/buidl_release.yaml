@@ -1,0 +1,47 @@
+name: 'build_release'
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  wiz-cli-image-scan:
+    if: github.event.pull_request.merged == true
+    name: 'Build and Push Image'
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
+
+    env:
+      SCAN_PATH: "." # Set the relative path in the repo to build the image from
+      TAG: "latest" # Set the tag to use for the image
+      POLICY: "Default vulnerabilities policy - [dmoloney]" # Set the desired Wiz CLI policy to use
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Build the Docker image
+      run: cd $SCAN_PATH && docker build . --tag ${{ github.repository }}:$TAG
+
+    - name: Download Wiz CLI
+      run: curl -o wizcli https://downloads.wiz.io/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+
+    - name: Authenticate to Wiz
+      run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
+      env:
+        WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
+        WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+
+    - name: Run wiz-cli docker image scan
+      run: ./wizcli docker scan --image $TAG --policy "$POLICY"
+
+    - name: Fetch digest of Docker image for Graph enrichment
+      run: ./wizcli docker tag --image $TAG
+
+    - name: Push the Docker image to the GitHub Container Registry
+      run: docker push ghcr.io/${{ github.repository }}:$TAG
